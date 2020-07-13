@@ -37,7 +37,7 @@ class view{
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item mr-2 active">
-                        <a class="nav-link btn btn-light" href="relatorio.php" target="_blank">Gerar PDF</a>
+                        <a class="nav-link btn btn-light" href="classes/relatorio.php" target="_blank">Gerar PDF</a>
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link btn btn-outline-light" href="<?php echo $_SERVER['PHP_SELF']; ?>?acao=logout">Logout</a>
