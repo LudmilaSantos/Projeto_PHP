@@ -1,48 +1,46 @@
 <?php
-    session_start();
-    if(!isset($_SESSION['f_id'])) {
-        session_destroy();
-        header("Location:/");
-    }
-    require_once("DAO/usuariosDAO.php");
-    require_once("DAO/perfisDAO.php");
-
-    $myuser = new usuarios();
-    $meuperfil = new perfisDAO();
-    $myuserdao = new usuariosDAO($myuser);
-    if(isset($_POST["acao"])) {
-        $acao = $_POST["acao"];
-    } else {
-        $acao = "";
-    }
-    if($acao == "alterar") {
-        foreach($myuserdao->find($_POST['f_id']) as $key=>$value) {
-            $f_nome = $value->nome;
-            $f_mail = $value->email;
-            $f_perfil = $value->id_perfil;
-            $f_id = $value->id;
-        }
-    }
+class view{
+    public function login($mensagem = ""){
 ?>
-<html>
-	<head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <div class="d-flex align-items-center justify-content-center h-100 w-100"> 
+            <div class="card p-3" style="width: 350px">
+                <h4 class="text-center text-primary">Login</h4>
+                <?php echo $mensagem ?>
+                <form class="m-0" method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>">
+                    <label class="d-block">E-mail: <input type="text" name="f_mail" class="form-control" autofocus></label>
+                    <label class="d-block">Senha: <input type="password" name="f_senha" class="form-control"></label>
+                    <button type="submit" class="btn btn-primary d-block mx-auto mt-3">Enviar</button>
+                </form>
+            </div>
+        </div>
+<?php
+    }
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-		<title>Usuários do Sistema</title>
-	</head>
-    <body>
+    public function trocar_senha($mensagem = ""){
+?>
+        <div class="d-flex align-items-center justify-content-center h-100 w-100"> 
+            <div class="card p-3" style="width: 350px">
+                <h4 class="text-center text-primary">Troque a senha padrão</h4>
+                <?php echo $mensagem ?>
+                <form class="m-0" method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>?acao=trocar_senha">
+                    <label class="d-block">Nova senha: <input type="password" name="f_senha" class="form-control" autofocus></label>
+                    <button type="submit" class="btn btn-primary d-block mx-auto mt-3">Enviar</button>
+                </form>
+            </div>
+        </div>
+<?php
+    }
+
+    public function cadastro($meuperfil, $myuserdao, $f_nome, $f_mail, $f_perfil, $f_id){
+?>
         <nav class="navbar navbar-expand-lg bg-primary p-4">
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item mr-2 active">
-                        <a class="nav-link btn btn-light" href="relatorio.php">Gerar PDF</a>
+                        <a class="nav-link btn btn-light" href="relatorio.php" target="_blank">Gerar PDF</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link btn btn-outline-light" href="logout.php">Logout</a>
+                        <a class="nav-link btn btn-outline-light" href="<?php echo $_SERVER['PHP_SELF']; ?>?acao=logout">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -51,7 +49,7 @@
         <div class="d-flex align-items-center flex-column p-4 bg-primary">
             <div class="card p-3" style="width: 350px">
                 <h4 class="text-center text-primary">Cadastro de usuários</h4>
-                <form class="m-0" method="POST" action="<?php echo isset($f_id) ? "alterar.php" : "inserir.php" ?>">
+                <form class="m-0" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>?acao=<?php echo isset($f_id) ? "alterar" : "inserir" ?>">
                     <label class="d-block">Nome: <input class="form-control" type="text" name="f_nome" value="<?php echo isset($f_nome) ? $f_nome : ""; ?>"></label>
                     <label class="d-block">E-mail: <input class="form-control" type="text" name="f_mail" value="<?php echo isset($f_mail) ? $f_mail : ""; ?>"></label>
                     <label class="d-block">Perfil: 
@@ -88,16 +86,16 @@
                                 <td><?php echo $usuarios->getEmail(); ?></td>
                                 <td><?php echo $meuperfil->find($usuarios->getPerfil())[0]->nome; ?></td>
                                 <td>
-                                    <form class="d-inline-block m-0" method="POST" action=<?php echo $_SERVER['PHP_SELF']; ?>>
+                                    <form class="d-inline-block m-0" method="POST" action=<?php echo $_SERVER['PHP_SELF']; ?>?acao=cadastro>
                                         <input type="hidden" name="f_id" value="<?php echo $usuarios->getId(); ?>">
                                         <input type="hidden" name="acao" value="alterar">
                                         <button class="btn btn-outline-primary" type="submit">Alterar</button>
                                     </form> 
-                                    <form class="d-inline-block m-0" method="POST" action="resetar_senha.php">
+                                    <form class="d-inline-block m-0" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>?acao=resetar_senha">
                                         <input type="hidden" name="f_id" value="<?php echo $usuarios->getId(); ?>">
                                         <button class="btn btn-outline-primary" type="submit">Resetar senha</button>
                                     </form>		
-                                    <form class="d-inline-block m-0" method="POST" action="excluir.php">
+                                    <form class="d-inline-block m-0" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>?acao=excluir">
                                         <input type="hidden" name="f_id" value="<?php echo $usuarios->getId(); ?>">
                                         <button class="btn btn-danger" type="submit">Excluir</button>
                                     </form>
@@ -111,10 +109,7 @@
                 </div>
             </div>
         </div>
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-	</body>
-</html>
+    <?php
+    }
+}
+?>

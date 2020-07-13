@@ -1,7 +1,7 @@
 <?php
     require_once("classes/fpdf/fpdf.php");
-    require_once("DAO/usuariosDAO.php");
-    require_once("DAO/perfisDAO.php");
+    require_once("Model/DAO/usuariosDAO.php");
+    require_once("Model/DAO/perfisDAO.php");
     
     $myuser = new usuarios();
     $meuperfil = new perfisDAO();
